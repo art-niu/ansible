@@ -24,4 +24,4 @@ TypeError: option values must be strings
 Resolution: 
 https://github.com/ansible/ansible/pull/43716#issuecomment-418348101
 
-The resolution has been applied on ec2.py.
+The resolution has been applied in ec2.py.

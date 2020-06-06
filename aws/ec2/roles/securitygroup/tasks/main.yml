@@ -1,0 +1,18 @@
+---
+# tasks file for securitygroup
+
+- name: load vars from globe role
+  include_vars: 
+    file: "{{ playbook_dir }}/roles/global/vars/main.yml"
+   
+- name: Create a security group in AWS for SSH access and HTTP
+  ec2_group:
+    name: "{{ security_group_name }}"
+    description: "Security Group for project: {{ project_name }}"
+    region: "{{ target_region }}"
+    rules:
+      - proto: tcp
+        ports: "{{ allow_ports }}"
+        cidr_ip: "{{ cidr_ip }}"
+
+

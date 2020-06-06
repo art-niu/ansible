@@ -1,0 +1,12 @@
+---
+# tasks file for python3
+- name: Install Python3 for RedHat
+  yum:
+    name: python3
+    state: latest
+
+- name: Create a symbolic link for python3
+  file:
+    src: /usr/bin/python3
+    dest: /usr/local/bin/python3
+    state: link

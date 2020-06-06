@@ -1,0 +1,22 @@
+---
+# tasks file for hellonginx
+- name: load vars from globe role
+  include_vars: 
+    file: "{{ playbook_dir }}/roles/global/vars/main.yml"
+
+- name: Template index.html.j2 to index.html on target
+  template:
+    src: templates/index.html.j2
+    dest: "{{ nginx_doc_root }}/index.html"
+    mode: 0644
+  tags:
+    - nginx-template
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+  notify: Check HTTP Service
+  tags:
+    - always
+

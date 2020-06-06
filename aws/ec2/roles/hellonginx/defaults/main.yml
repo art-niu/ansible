@@ -1,0 +1,4 @@
+---
+# defaults file for awesomeweb
+
+doc_roots: /usr/share/nginx/html

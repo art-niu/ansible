@@ -1,0 +1,12 @@
+---
+# handlers file for hellonginx
+- name: Check HTTP Service
+
+  # Target: where our play will run and options it will run with
+  #hosts: "tag_Name_{{ instance_name }}*"
+
+  # Task: the list of tasks that will be executed within the play, this section
+  # can also be used for pre and post tasks
+  #tasks:
+  debug:
+    msg: "Check http://{{ ansible_host }}"
