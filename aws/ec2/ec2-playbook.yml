@@ -1,0 +1,21 @@
+---
+# Create ec2 defined in roles/globe/vars/main.yml
+
+-
+  hosts: localhost
+  connection: local
+
+  roles:
+    - securitygroup
+    - ec2
+
+-
+  # Ansible does not support variable in hosts, if it is needed, you have 2 options:
+  # option 1: pass in from command line.
+  # option 2: integrate hellonginx play into ec2 play above.
+  hosts: "tag_Name_dragon*" 
+  include_vars: 
+    file: "{{ playbook_dir }}/roles/global/vars/main.yml"
+  roles:
+    - hellonginx
+    # - { role: nginx, become: yes }

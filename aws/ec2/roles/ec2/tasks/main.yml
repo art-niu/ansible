@@ -15,7 +15,7 @@
           sudo yum install python3 -y ;
     region: "{{ target_region }}"
     wait: true
-    exact_count: 1
+    exact_count: "{{ ec2_count }}"
     count_tag:
        Name: NginxWebservers
     instance_tags:

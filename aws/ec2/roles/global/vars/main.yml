@@ -8,6 +8,7 @@ security_group_name: "{{ project_name }}_sg"
 instance_type: t2.micro
 ami_name: ami-098f16afa9edf40be
 instance_name: dragon
+ec2_count: 2
 allow_ports: [22, 80, 443]
 cidr_ip: 0.0.0.0/0
 client_python_path: /usr/bin/python3
