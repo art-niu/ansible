@@ -6,6 +6,7 @@ macOS Catalina, v 10.15.4
 
 Solution:
 $ pip3 uninstall ansible
+
 $ sudo pip3 install ansible
 
 Problem:
