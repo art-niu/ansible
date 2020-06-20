@@ -1,0 +1,24 @@
+---
+  - gce:
+      instance_names: my-test-instance1
+      zone: us-central1-a
+      machine_type: n1-standard-1
+      state: present
+      service_account_email: "your-sa@your-project-name.iam.gserviceaccount.com"
+      credentials_file: "/path/to/your-key.json"
+      project_id: "your-project-name"
+      disk_size: 32
+
+- name: Create GCE vm
+  gcp_compute_instance:
+    name: "{{ item }}"
+    machine_type: n1-standard-1
+    image: "projects/ubuntu-os-cloud/global/images/ubuntu-1910-eoan-v20200529"
+    zone: us-central1-a
+    project: "{{ gcp_project }}"
+    auth_kind: "service_account_file"
+    service_account_file: "/Users/arthurniu/Downloads/hello-world-261815-64afc1a3686d.json"
+    state: present
+  with_items:
+  - instance-1
+  - instance-2

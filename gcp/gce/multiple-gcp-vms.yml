@@ -1,0 +1,24 @@
+---
+# This is to create multiple gcp vms by passwing different instance names.
+
+-
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - "{{ playbook_dir }}/roles/global/vars/main.yml"
+
+  roles: 
+  - { role: gce, instance_name: webserver } 
+  - { role: gce, instance_name: dbserver } 
+
+
+# Below loops don't work as of 06/20/2020
+  # roles: 
+  #   - { role: gce, instance_name: "{{ item }}" } 
+  #     loop: "{{ instance_names }}"
+
+  # roles: 
+  #   - {role: gce, instance_name: "{{ item }}" } 
+  #     with_items: 
+  #       - "webserver"
+  #       - "dbserver"
