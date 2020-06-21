@@ -1,3 +1,5 @@
+This module creates VPC, Subnet, Firewall, Routing and VMs
+
 Reference: https://docs.ansible.com/ansible/latest/scenario_guides/guide_gce.html
 
 Requisites

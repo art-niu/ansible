@@ -1,17 +1,30 @@
 ---
 # vars file for global
 
+# Variables for project
 project_name: articy-qa
 env_type: qa
-vm_image: "projects/ubuntu-os-cloud/global/images/ubuntu-1910-eoan-v20200529"
+
+# Variables for Authentication and Authorization
 gcp_project: hello-world-261815
 gcp_cred_kind: serviceaccount
 gcp_cred_file: ~/.ssh/ansible-gcp-key.json
 gcp_region: us-central1
 gcp_zone: us-central1-a
 
+# Variables for Network and Security
+# auto_create_subnetworks: 
+#   - no: create custom-mode network
+#   - yes: create legacy(default) network
+auto_create_subnetworks: no
 ipv4_range: 10.33.133.0/24
 allowed_ports: [22,80,443]
 source_ranges: ['0.0.0.0/0']
-instance_names: [calmdown, peace]
+destination_ranges: 0.0.0.0/0
+private_ip_google_access: yes
+next_hop_gateway: global/gateways/default-internet-gateway
+
+# Variables for Instance
+vm_image: "projects/ubuntu-os-cloud/global/images/ubuntu-1910-eoan-v20200529"
+instance_names: [webserver01, mongodb01]
 machine_type: n1-standard-1

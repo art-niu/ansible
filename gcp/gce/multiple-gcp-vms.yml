@@ -6,10 +6,13 @@
   connection: local
   vars_files: 
     - "{{ playbook_dir }}/roles/global/vars/main.yml"
+  any_errors_fatal: true
 
+  # roles doesn't support run in parallel as of 06/21/2020
   roles: 
-  - { role: gce, instance_name: webserver02 } 
-#  - { role: gce, instance_name: dbserver } 
+  - network
+  - { role: gce, instance_name: webserver01 } 
+  - { role: gce, instance_name: dbserver01 } 
 
 
 # Below loops don't work as of 06/20/2020
