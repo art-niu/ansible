@@ -8,8 +8,8 @@
     - "{{ playbook_dir }}/roles/global/vars/main.yml"
 
   roles: 
-  - { role: gce, instance_name: webserver } 
-  - { role: gce, instance_name: dbserver } 
+  - { role: gce, instance_name: webserver02 } 
+#  - { role: gce, instance_name: dbserver } 
 
 
 # Below loops don't work as of 06/20/2020

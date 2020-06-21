@@ -1,5 +1,8 @@
 ---
 # vars file for global
+
+project_name: articy-qa
+env_type: qa
 vm_image: "projects/ubuntu-os-cloud/global/images/ubuntu-1910-eoan-v20200529"
 gcp_project: hello-world-261815
 gcp_cred_kind: serviceaccount
@@ -7,5 +10,8 @@ gcp_cred_file: ~/.ssh/ansible-gcp-key.json
 gcp_region: us-central1
 gcp_zone: us-central1-a
 
+ipv4_range: 10.33.133.0/24
+allowed_ports: [22,80,443]
+source_ranges: ['0.0.0.0/0']
 instance_names: [calmdown, peace]
 machine_type: n1-standard-1

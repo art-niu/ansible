@@ -1,0 +1,78 @@
+---
+# tasks file for vpc
+
+- name: load vars from globe role
+  include_vars: 
+    file: "{{ playbook_dir }}/roles/global/vars/main.yml"
+
+- name: Create VPC with parameters defined in {{ playbook_dir }}/roles/global/vars/main.yml
+  ec2_vpc_net:
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ cidr_block }}"
+    region: "{{ region_name }}"
+    tags:
+      env: "{{ env }}"
+    tenancy: "{{ tenancy }}"
+  register: ec2_vpc_net_instance
+
+- name: Create Internet Gateway
+  ec2_vpc_igw:
+    vpc_id: "{{ ec2_vpc_net_instance.vpc.id }}"
+    region: "{{ region_name }}"
+    state: "{{ state }}"
+  register: igw_instance
+
+- name: create vpc subnet
+  ec2_vpc_subnet:
+    vpc_id: "{{ ec2_vpc_net_instance.vpc.id }}"
+    region: "{{ region_name }}"
+    az: "{{ available_zone }}"
+    state: "{{ state }}"
+    cidr: "{{ item }}"
+    tags:
+      Name: "{{ project_name }}_{{ env }}_{{ item | regex_replace('[./]','_') }}"
+  loop: "{{ public_subnet }}" # loop to create multiple public subnet
+  register: public_subnet_instances
+
+- name: test public_subnet_instances
+  debug:
+    msg: "{{ public_subnet_instances }}" 
+
+# a default security group is created druing vpc generation
+
+# - name: create security group for the vpc
+#   ec2_group:
+#     vpc_id: "{{ ec2_vpc_net_instance.vpc.id }}"
+#     region: "{{ region_name }}"
+#     state: "{{ state }}"
+#     name: "{{ security_group_name }}"
+#     description: "{{ security_group_name }}"
+#     tags:
+#       Name: "{{ security_group_name  }}"
+#     rules:
+#     - proto: tcp
+#       ports: "{{ public_subnet_ports_to_open }}"
+#       cidr_ip: "{{ public_subnet }}"
+#       rule_desc: "allow all on ports {{ public_subnet_ports_to_open }}"
+
+#   register: security_group_results
+# - name: create ec2 VPC public subnet route table
+#   # create route table and connect subnet to routes
+#   ec2_vpc_route_table:
+#     vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+#     region: "{{ region }}"
+#     state: "{{ state }}"
+#     tags:
+#       Name: "{{ route_table_name }}"
+#     subnets: [ "{{ subnet_result.subnet.id }}" ]
+    
+#     # create routes
+#     routes:
+#       - dest: "{{ destinationCidrBlock }}" 
+#         gateway_id: "{{ igw_result.gateway_id }}"
+#   register: public_route_table
+
+- name: print out new vpc, subnet id, and security group for vpc
+  # print out new subnet id and security group
+  debug:
+    msg: "To use the new created VPC: {{ vpc_name }}; Use subnet id: {{ subnet_result.subnet.id }} and security group: {{ security_group_results.group_id }} to create your AWS instances "

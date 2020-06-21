@@ -1,0 +1,20 @@
+---
+# vars file for global
+
+region_name: us-east-1
+available_zone: us-east-1c
+
+project_name: bank
+env: dev
+vpc_name: "{{ project_name }}_vpc_{{ env }}"
+igw_name: "{{ project_name }}_igw_{{ env }}"
+acl_name: "{{ project_name }}_acl_{{ env }}"
+security_group_name: "{{ project_name }}_{{ env }} Security Group" 
+route_table_name:  "{{ project_name }}_{{ env }} Route Table"
+cidr_block: '10.10.0.0/16'
+public_subnet: ['10.10.0.0/24', '10.10.1.0/24']
+public_subnet_ports_to_open: [22, 80, 443]
+private_subnet: ['10.10.10.0/24', '10.10.11.0/24']
+
+tenancy: 'dedicated'
+state: 'present'

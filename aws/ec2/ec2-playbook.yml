@@ -14,8 +14,6 @@
   # option 1: pass in from command line.
   # option 2: integrate hellonginx play into ec2 play above.
   hosts: "tag_Name_dragon*" 
-  include_vars: 
-    file: "{{ playbook_dir }}/roles/global/vars/main.yml"
   roles:
     - hellonginx
     # - { role: nginx, become: yes }
