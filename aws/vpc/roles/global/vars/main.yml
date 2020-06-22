@@ -4,7 +4,7 @@
 region_name: us-east-1
 available_zone: us-east-1c
 
-project_name: bank
+project_name: capital
 env: dev
 vpc_name: "{{ project_name }}_vpc_{{ env }}"
 igw_name: "{{ project_name }}_igw_{{ env }}"
@@ -12,21 +12,31 @@ acl_name: "{{ project_name }}_acl_{{ env }}"
 security_group_name: "{{ project_name }}_{{ env }} Security Group" 
 route_table_name: "{{ project_name }}_{{ env }} Route Table"
 
-public_subnet: ['10.10.0.0/24', '10.10.1.0/24']
+#public_subnet: ['10.10.0.0/24', '10.10.1.0/24']
 public_subnet_ports_to_open: [22, 80, 443]
-private_subnet: ['10.10.10.0/24', '10.10.11.0/24']
+#private_subnet: ['10.10.10.0/24', '10.10.11.0/24']
 
+# vpc topology data
 cidr_block: '10.10.0.0/16'
+tenancy: 'dedicated'
+state: 'present'
 
 subnetworks: [
   {cidr: 10.10.1.0/24, az: us-east-1a, resource_tags: { Environment: "{{ env }}", Tier : "web" }}, 
-  {cidr: 10.10.2.0/24, az: us-east-1b, resource_tags: { Environment: "{{ env }}", Tier : "application" }}, 
-  {cidr: 10.10.3.0/24, az: us-east-1c, resource_tags: { Environment: "{{ env }}", Tier : "db" }} 
+  {cidr: 10.10.2.0/24, az: us-east-1a, resource_tags: { Environment: "{{ env }}", Tier : "application" }}, 
+  {cidr: 10.10.3.0/24, az: us-east-1a, resource_tags: { Environment: "{{ env }}", Tier : "db" }}, 
+  {cidr: 10.10.11.0/24, az: us-east-1c, resource_tags: { Environment: "{{ env }}", Tier : "web" }}, 
+  {cidr: 10.10.12.0/24, az: us-east-1c, resource_tags: { Environment: "{{ env }}", Tier : "application" }}, 
+  {cidr: 10.10.13.0/24, az: us-east-1c, resource_tags: { Environment: "{{ env }}", Tier : "db" }} 
 ]
 
-private_route_table: {name: "{{ project_name }}-{{ env }}-private", subnets: [10.10.1.0/24,10.10.2.0/24], dest: 0.0.0.0/0}
-public_route_table:  {name: "{{ project_name }}-{{ env }}-public", subnets: [10.10.3.0/24], dest: 0.0.0.0/0} 
+public_route_tables: [
+  {name: "{{ project_name }}-{{ env }}-public", az: us-east-1a, subnets: [10.10.1.0/24], dest: 0.0.0.0/0},
+  {name: "{{ project_name }}-{{ env }}-public", az: us-east-1c, subnets: [10.10.11.0/24], dest: 0.0.0.0/0}
+]
 
+private_route_tables: [
+  {name: "{{ project_name }}-{{ env }}-private", az: us-east-1a, subnets: [10.10.2.0/24,10.10.3.0/24], dest: 0.0.0.0/0},
+  {name: "{{ project_name }}-{{ env }}-private", az: us-east-1c, subnets: [10.10.12.0/24,10.10.13.0/24], dest: 0.0.0.0/0}
+]
 
-tenancy: 'dedicated'
-state: 'present'

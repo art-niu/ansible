@@ -16,11 +16,11 @@
     tenancy: "{{ tenancy }}"
   register: vpcnet
 
-# - 
-#   debug: 
-#     msg: "{{ vpcnet.vpc }}"
+- 
+  debug: 
+    msg: "{{ vpcnet.vpc }}"
 
-- name: create subnet
+- name: create subnets
   ec2_vpc_subnet:
     #name: "{{ project_name }}-{{ env }}"     # not supported as of 06/21/2020
     state: present
@@ -29,7 +29,6 @@
     az: "{{ item.az }}"
     region: "{{ region_name }}"
     tags: "{{ item.resource_tags }}"
-    #tags: { "Environment":"Development" }
   with_items: 
     "{{ subnetworks }}"
   register: subnets
@@ -37,35 +36,71 @@
 -
   debug:
     msg: "{{ subnets }}"
-    
-- name: create internet gateway 
+
+- name: create internet gateway per vpc
   ec2_vpc_igw:
     vpc_id: "{{ vpcnet.vpc.id }}"
     state: present
   register: igw
 
-- name: Set up public subnet route table
+- name: Set up public subnet route tables
   ec2_vpc_route_table:
     vpc_id: "{{ vpcnet.vpc.id }}"
     region: "{{ region_name }}"
     tags:
-      Name: "{{ public_route_table.name }}"
+      Name: "{{ item.name }}-{{ item.az }}"
     subnets:
-      "{{ public_route_table.subnets }}"
+      "{{ item.subnets }}"
     routes:
-      - dest: "{{ public_route_table.dest }}"
+      - dest: "{{ item.dest }}"
         gateway_id: "{{ igw.gateway_id }}"
+  with_items:
+    "{{ public_route_tables }}"
   register: public_rt
 
-- name: Set up private subnet route table
+- 
+  debug:
+    msg: "{{ public_rt }}"
+#    msg: "{{ public_rt.associations.subnet_id }}"
+
+# one nat gateway per public subnet
+- name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
+  ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ item.route_table.associations[0].subnet_id }}"
+    wait: yes
+    region: "{{ region_name }}"
+    if_exist_do_not_create: true
+  with_items:
+     "{{ public_rt.results }}" 
+  register: ngw
+
+- name: Set up private subnet route tables
   ec2_vpc_route_table:
     vpc_id: "{{ vpcnet.vpc.id }}"
     region: "{{ region_name }}"
     tags:
-      Name: "{{ private_route_table.name }}"
+      Name: "{{ item.name }}-{{ item.az }}"
     subnets:
-      "{{ private_route_table.subnets }}"
+      "{{ item.subnets }}"
     routes:
-      - dest: "{{ private_route_table.dest }}"
+      - dest: "{{ item.dest }}"
         gateway_id: "{{ igw.gateway_id }}"
+  with_items:
+    "{{ private_route_tables }}"
   register: private_rt
+
+# - name: Set up private subnet route tables
+#   ec2_vpc_route_table:
+#     vpc_id: "{{ vpcnet.vpc.id }}"
+#     region: "{{ region_name }}"
+#     tags:
+#       Name: "{{ private_route_table.name }}"
+#     subnets:
+#       "{{ private_route_table.subnets }}"
+#     routes:
+#       - dest: "{{ private_route_table.dest }}"
+#         gateway_id: "{{ igw.gateway_id }}"
+#   register: private_rt
+
+
