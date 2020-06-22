@@ -10,11 +10,23 @@ vpc_name: "{{ project_name }}_vpc_{{ env }}"
 igw_name: "{{ project_name }}_igw_{{ env }}"
 acl_name: "{{ project_name }}_acl_{{ env }}"
 security_group_name: "{{ project_name }}_{{ env }} Security Group" 
-route_table_name:  "{{ project_name }}_{{ env }} Route Table"
-cidr_block: '10.10.0.0/16'
+route_table_name: "{{ project_name }}_{{ env }} Route Table"
+
 public_subnet: ['10.10.0.0/24', '10.10.1.0/24']
 public_subnet_ports_to_open: [22, 80, 443]
 private_subnet: ['10.10.10.0/24', '10.10.11.0/24']
+
+cidr_block: '10.10.0.0/16'
+
+subnetworks: [
+  {cidr: 10.10.1.0/24, az: us-east-1a, resource_tags: { Environment: "{{ env }}", Tier : "web" }}, 
+  {cidr: 10.10.2.0/24, az: us-east-1b, resource_tags: { Environment: "{{ env }}", Tier : "application" }}, 
+  {cidr: 10.10.3.0/24, az: us-east-1c, resource_tags: { Environment: "{{ env }}", Tier : "db" }} 
+]
+
+private_route_table: {name: "{{ project_name }}-{{ env }}-private", subnets: [10.10.1.0/24,10.10.2.0/24], dest: 0.0.0.0/0}
+public_route_table:  {name: "{{ project_name }}-{{ env }}-public", subnets: [10.10.3.0/24], dest: 0.0.0.0/0} 
+
 
 tenancy: 'dedicated'
 state: 'present'
