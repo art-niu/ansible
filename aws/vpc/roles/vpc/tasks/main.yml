@@ -61,7 +61,6 @@
 - 
   debug:
     msg: "{{ public_rt }}"
-#    msg: "{{ public_rt.associations.subnet_id }}"
 
 # one nat gateway per public subnet
 - name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
@@ -75,7 +74,13 @@
      "{{ public_rt.results }}" 
   register: ngw
 
+- 
+  debug:
+    msg: "{{ ngw }}"
+
 - name: Set up private subnet route tables
+  vars:
+    jmesquery: "results[?item.item.az=='{{ item.az }}'].nat_gateway_id"
   ec2_vpc_route_table:
     vpc_id: "{{ vpcnet.vpc.id }}"
     region: "{{ region_name }}"
@@ -85,22 +90,8 @@
       "{{ item.subnets }}"
     routes:
       - dest: "{{ item.dest }}"
-        gateway_id: "{{ igw.gateway_id }}"
+        gateway_id: "{{ ngw | json_query(jmesquery) | first }}"       # first to pick the first and only one element from list.
   with_items:
     "{{ private_route_tables }}"
   register: private_rt
-
-# - name: Set up private subnet route tables
-#   ec2_vpc_route_table:
-#     vpc_id: "{{ vpcnet.vpc.id }}"
-#     region: "{{ region_name }}"
-#     tags:
-#       Name: "{{ private_route_table.name }}"
-#     subnets:
-#       "{{ private_route_table.subnets }}"
-#     routes:
-#       - dest: "{{ private_route_table.dest }}"
-#         gateway_id: "{{ igw.gateway_id }}"
-#   register: private_rt
-
 
