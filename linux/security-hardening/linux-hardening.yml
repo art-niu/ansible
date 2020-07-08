@@ -1,0 +1,12 @@
+---
+# Linux System Hardening
+
+-
+  hosts: redhat_7
+  become: yes
+  gather_facts: yes
+
+  roles:
+  - security-update
+    selinux
+    runlevel

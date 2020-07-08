@@ -1,0 +1,23 @@
+---
+# tasks file for security-update
+
+- name: install yum-security for CentOS/RedHat
+  yum:
+    name: yum-security
+    state: latest
+
+- name: 
+  yum:
+    list: security
+  register: result
+
+- debug: 
+  var: result
+  verbosity: 3
+
+- name: install security updates
+  yum:
+    name: '*'
+    security: yes
+    state: latest
+  

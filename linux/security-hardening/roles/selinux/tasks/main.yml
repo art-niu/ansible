@@ -1,0 +1,16 @@
+---
+# tasks file for selinux
+# Author: Arthur Niu
+  
+- name: change selinux, reboot is required
+  selinux: 
+    policy: targeted
+    state: {{ selinux_state }}
+  when: {{ selinux_state }} != 'disabled'
+  register: se_state
+
+- name: disable selinux, reboot is required
+  selinux:
+    state: {{ selinux_state }}
+  when: {{ selinux_state }} == 'disabled'
+  register: se_state
