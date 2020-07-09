@@ -1,18 +1,19 @@
 ---
 # tasks file for security-update
 
-- name: install yum-security for CentOS/RedHat
-  yum:
-    name: yum-security
-    state: latest
+#- name: install yum-security for CentOS/RedHat
+#  yum:
+#    name: yum-security
+#    state: latest
 
 - name: 
   yum:
     list: security
+  when: ansible_distribution in ["CentOS", "RedHat"]
   register: result
 
 - debug: 
-    msg: "{{ resula }}"
+    msg: "{{ result }}"
     #  verbosity: 3
 
 - name: install security updates
@@ -20,4 +21,5 @@
     name: '*'
     security: yes
     state: latest
+  when: ansible_distribution in ["CentOS", "RedHat"]
   
