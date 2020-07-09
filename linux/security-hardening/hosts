@@ -1,5 +1,8 @@
+[control]
+angular
+
 [redhat_7]
-3.96.53.107
+centos01
 
 [redhat_8]
 

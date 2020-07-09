@@ -7,6 +7,6 @@
   gather_facts: yes
 
   roles:
-  - security-update
-    selinux
-    runlevel
+   - security-update
+   - selinux
+   - runlevel

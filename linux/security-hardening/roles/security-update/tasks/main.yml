@@ -12,8 +12,8 @@
   register: result
 
 - debug: 
-  var: result
-  verbosity: 3
+    msg: "{{ resula }}"
+    #  verbosity: 3
 
 - name: install security updates
   yum:

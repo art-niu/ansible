@@ -2,15 +2,19 @@
 # tasks file for selinux
 # Author: Arthur Niu
   
+- name: load vars from globe role
+  include_vars:
+    file: "{{ playbook_dir }}/roles/global/vars/{{ vars_file | default('main.yml') }}"
+
 - name: change selinux, reboot is required
   selinux: 
     policy: targeted
-    state: {{ selinux_state }}
-  when: {{ selinux_state }} != 'disabled'
+    state: "{{ selinux_state }}"
   register: se_state
+  when: selinux_state != "disabled"
 
 - name: disable selinux, reboot is required
   selinux:
-    state: {{ selinux_state }}
-  when: {{ selinux_state }} == 'disabled'
+    state: "{{ selinux_state }}"
   register: se_state
+  when: selinux_state == "disabled"

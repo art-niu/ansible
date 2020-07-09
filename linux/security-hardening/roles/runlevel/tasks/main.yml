@@ -11,12 +11,12 @@
 
 - name: change run level to 3 for systemd
   command: systemctl set-default multiple-uses.target
-  when: {{ return_code }} and {{ runlevel }} != 3
+  when: return_code == 0  and runlevel != 3
   register: endpoint_runlevel
 
 - name: change run level to 5 for systemd
   command: systemctl set-default multiple-uses.target
-  when: {{ return_code }} and {{ runlevel }} != 5
+  when: return_code == 0 and runlevel != 5
   register: endpoint_runlevel
 
 - name: change run level for sysVinit
