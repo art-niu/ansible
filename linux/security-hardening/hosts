@@ -1,8 +1,8 @@
 [control]
-angular
+ansible01
 
 [redhat_7]
-centos01
+centos02
 
 [redhat_8]
 
@@ -14,3 +14,6 @@ centos01
 
 
 [ubuntu_19]
+
+[ubuntu_19]
+centos03
